@@ -1,14 +1,50 @@
 <!DOCTIPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <script type="text/javascript" src="raphael-min.js"></script>
     <script type="text/javascript" src="russian-map.js"></script>
     <script>
+
+        var procents = [
+            { regionId=32, procent=5.86 },
+            { regionId=33, procent=5.45 },
+            { regionId=44, procent=6.86 },
+            { regionId=46, procent=7.26 },
+            { regionId=71, procent=6.82 },
+            { regionId=29, procent=7.86 },
+            { regionId=51, procent=5.69 },
+            { regionId=91, procent=11.26 },
+            { regionId=15, procent=8.40 },
+            { regionId=12, procent=7.15 },
+            { regionId=18, procent=18.10 },
+            { regionId=45, procent=11.22 },
+            { regionId=22, procent=10.14 },
+            { regionId=41, procent=12.97 },
+            { regionId=25, procent=9.10 },
+            { regionId=27, procent=11.58 },
+            { regionId=28, procent=11.82 },
+            { regionId=79, procent=35.00 },
+        ];
+
         // запрос на получение json регионов
-        window.onload = function() {
-            fetch('./with-regions.json').then(function(response) {
-                response.json().then(function(data) {
+        window.onload = function () {
+            fetch('./with-regions.json').then(function (response) {
+                response.json().then(function (data) {
+
+                    data.regions.forEach(function (region) {
+                        let procent = procents.find(function (p) { return p.regionId == region.ident; });
+                        if (procent) {
+                            region.attr = {
+                                fill: '#00ff00', // цвет которым закрашивать
+                                stroke: '#ffffff', // цвет границы
+                                'stroke-width': 1, // ширина границы
+                                'stroke-linejoin': 'round' // скруглять углы
+                            };
+                        }
+                    });
+
                     new RussianMap({
                         viewPort: data.viewPort,
                         mapId: 'russian-map',
@@ -24,13 +60,13 @@
                         mouseMoveAttr: {
                             fill: '#25669e'
                         },
-                        onMouseMove: function(event) {
+                        onMouseMove: function (event) {
                             console.log('mouse on ' + this.region.name + ' (ident: ' + this.region.ident + ')');
                         },
-                        onMouseOut: function(event) {
+                        onMouseOut: function (event) {
                             // console.log('out on ' + this.region.name + ' (ident: ' + this.region.ident + ')');
                         },
-                        onMouseClick: function(event) {
+                        onMouseClick: function (event) {
                             console.log('clicked on ' + this.region.name);
                         }
                     }, data.regions);
@@ -39,7 +75,9 @@
         };
     </script>
 </head>
+
 <body>
-<div id="russian-map"></div>
+    <div id="russian-map"></div>
 </body>
+
 </html>
